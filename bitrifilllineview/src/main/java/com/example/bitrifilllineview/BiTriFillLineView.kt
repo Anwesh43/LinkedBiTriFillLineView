@@ -225,4 +225,13 @@ class BiTriFillLineView(ctx : Context) : View(ctx) {
             }
         }
     }
+
+    companion object {
+
+        fun create(activity : Activity) : BiTriFillLineView {
+            val view : BiTriFillLineView = BiTriFillLineView(activity)
+            activity.setContentView(view)
+            return view
+        }
+    }
 }
