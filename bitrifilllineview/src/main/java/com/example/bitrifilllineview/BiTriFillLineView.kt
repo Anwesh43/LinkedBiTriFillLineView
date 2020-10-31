@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.graphics.RectF
 import android.app.Activity
 import android.content.Context
+import android.graphics.Path
 
 val colors : Array<Int> = arrayOf(
     "#F44336",
@@ -30,3 +31,45 @@ fun Int.inverse() : Float = 1f / this
 fun Float.maxScale(i : Int, n : Int) : Float = Math.max(0f, this - i * n.inverse())
 fun Float.divideScale(i : Int, n : Int) : Float = Math.min(n.inverse(), maxScale(i, n)) * n
 fun Float.sinify() : Float = Math.sin(this * Math.PI).toFloat()
+
+fun Canvas.drawTriFillPath(scale : Float, size : Float, paint : Paint) {
+    val path : Path = Path()
+    save()
+    path.moveTo(-size, 0f)
+    path.lineTo(0f, -size)
+    path.lineTo(size, 0f)
+    path.lineTo(-size, 0f)
+    clipPath(path)
+    drawRect(RectF(-size, -size * scale, size, 0f), paint)
+    restore()
+}
+
+fun Canvas.drawBiTriFillLine(scale : Float, w : Float, h : Float, paint : Paint) {
+    val sf : Float = scale.sinify()
+    val size : Float = Math.min(w, h) / sizeFactor
+    save()
+    translate(w / 2, h / 2)
+    rotate(rot * sf.divideScale(2, parts))
+    for (j in 0..1) {
+        save()
+        scale(1f, 1f - 2 * j)
+        for (k in 0..1) {
+            save()
+            scale(1f - 2 * k, 1f)
+            drawLine(-size, 0f, -size + size * sf.divideScale(0, parts), -size, paint)
+            restore()
+        }
+        drawTriFillPath(sf.divideScale(1, parts), size, paint)
+        restore()
+    }
+    restore()
+}
+
+fun Canvas.drawBTFLNode(i : Int, scale : Float, paint : Paint) {
+    val w : Float = width.toFloat()
+    val h : Float = height.toFloat()
+    paint.color = colors[i]
+    paint.strokeCap = Paint.Cap.ROUND
+    paint.strokeWidth = Math.min(w, h) / strokeFactor
+    drawBiTriFillLine(scale, w, h, paint)
+}
