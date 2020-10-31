@@ -24,7 +24,7 @@ val strokeFactor : Float = 90f
 val sizeFactor : Float = 3.2f
 val delay : Long = 20
 val backColor : Int = Color.parseColor("#BDBDBD")
-val scGap : Float = 0.02f / strokeFactor
+val scGap : Float = 0.02f / parts
 val rot : Float = 180f
 
 fun Int.inverse() : Float = 1f / this
@@ -53,10 +53,17 @@ fun Canvas.drawBiTriFillLine(scale : Float, w : Float, h : Float, paint : Paint)
     for (j in 0..1) {
         save()
         scale(1f, 1f - 2 * j)
+        translate(0f, -(h / 2 - size) * sf.divideScale(2, parts))
         for (k in 0..1) {
             save()
             scale(1f - 2 * k, 1f)
-            drawLine(-size, 0f, -size + size * sf.divideScale(0, parts), -size, paint)
+            drawLine(
+                -size,
+                0f,
+                -size + size * sf.divideScale(0, parts),
+                -size * sf.divideScale(0, parts),
+                paint
+            )
             restore()
         }
         drawTriFillPath(sf.divideScale(1, parts), size, paint)
