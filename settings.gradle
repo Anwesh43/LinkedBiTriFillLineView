@@ -1,0 +1,3 @@
+include ':bitrifilllineview'
+include ':app'
+rootProject.name = "LinkedBiTriFillLineView"
